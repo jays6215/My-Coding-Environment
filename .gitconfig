@@ -4,8 +4,11 @@
 [github]
 	user = rabbit125
 [color]
+	branch = auto
+	diff = auto
+	log = auto
+	status = auto
 	ui = true
-	diff = true
 [core]
 	editor = vim
 [alias]
