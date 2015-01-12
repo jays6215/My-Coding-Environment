@@ -1,6 +1,11 @@
 [user]
 	email = jay_s6215@hotmail.com
-	name = jays6215
+	name = rabbit125
+[github]
+	user = rabbit125
+[color]
+	ui = true
+	diff = true
 [core]
 	editor = vim
 [alias]
@@ -8,8 +13,6 @@
 	co = checkout
 	ci = commit
 	df = diff
+	lg = log --decorate
 	rb = rebase
 	st = status
-[color]
-	ui = true
-	diff = true
