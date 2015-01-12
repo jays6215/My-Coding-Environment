@@ -1,0 +1,52 @@
+﻿
+#Start message
+startup_message off
+bell_msg ""
+
+# Set default encoding using utf8
+defutf8 on
+
+# Refresh the display when exiting programs
+altscreen on
+
+#bind f eval "caption splitonly" "hardstatus ignore"
+#bind F eval "caption always"    "hardstatus alwayslastline"
+
+# 增加熱鍵 「Alt+z」 , 「Alt+x」切換視窗
+# 使用這兩個快捷鍵來切換左右視窗
+bindkey ^[z prev
+bindkey ^[x next
+bindkey "^f" focus
+
+# Ctrl + n : 新增子視窗(C-a c)
+bindkey "^t" screen
+
+# Ctrl + r : 清理當前視窗(C-a c)
+bindkey "^r" clear
+
+# 指定 screen 使用 utf8 編碼
+defencoding utf8
+# Set default encoding using utf8
+defutf8 on
+
+# Refresh the display when exiting programs
+altscreen on
+
+# Window numbering starts at 1, not 0.
+bind c screen 1
+bind ^c screen 1
+bind 0 select 10
+screen 1
+
+# 設定 screen 可以往上卷的行數 (scroll back)
+defscrollback 10000
+
+# Dynamic title
+shelltitle '$|bash'
+
+#caption    always        "%{+b rk}%H%{gk} |%c %{yk}%d.%m.%Y | %72=Load: %l %{wk}"
+caption always "%{.KW} %-w%{.bW}%n %t%{.KW}%+w"
+#hardstatus alwayslastline "%?%{yk}%-Lw%?%{wb}%n*%f %t%?(%u)%?%?%{yk}%+Lw%?"
+#hardstatus alwayslastline "Host: %H Date: %D-%M-%Y: Load: %l "
+hardstatus alwayslastline "%{w} [screen %n]%=%{M}%e %{G}%H %{Y}%c %{R}%Y/%m/%d %{C}Load: %l %{w}"
+

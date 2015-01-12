@@ -1,0 +1,15 @@
+[user]
+	email = jay_s6215@hotmail.com
+	name = jays6215
+[core]
+	editor = vim
+[alias]
+	br = branch
+	co = checkout
+	ci = commit
+	df = diff
+	rb = rebase
+	st = status
+[color]
+	ui = true
+	diff = true
