@@ -1,38 +1,18 @@
-" VIM 6.0,
-if version >= 600
-    "set nohlsearch
-    "set foldcolumn=2
-    "set foldmethod=syntax
-    "set foldmethod=marker
-    "set foldlevel=1
-    "set foldtext=/^/=>
-    set encoding=utf-8
-    "set fileencoding=big5
-    "set termencoding=big5
-    "set encoding=big5
-    "set fileencodings=latin,big5,ucs-bom,utf-8,sjis,big5
-    set fileencodings=utf-8,big5,ucs-bom,sjis,latin1
-else
-    set fileencoding=taiwan
-endif
-
-if has("multi_byte")
-    set       bomb
-    set       encoding=utf-8
-    setglobal fileencoding=utf-8
-    set       fileencoding=utf-8
-    "set       termencoding=big5
-    set       fileencodings=utf-8,big5,ucs-bom,sjis,latin1
-    set       guifont=-misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
-    set       guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
-else
-    echoerr "Sorry, this version of (g)vim was not compiled with multi_byte"
-endif
-
 " 個人vim設定 by rabbit125
-" Modify at 四  5月 15 12:58:31 CST 2014
+" Modify at Mon Jan 12 17:43:33 CST 2015
+" Refs
 " http://homepage.ntu.edu.tw/~r02921014/paste_to_vimrc.txt
 " http://yslinlinuxrc.googlecode.com/svn-history/r28/trunk/.vimrc
+
+    " 檔案相關設定 {{{
+        set       encoding=utf-8
+        setglobal fileencoding=utf-8
+        set       fileencoding=utf-8
+        "set       termencoding=big5
+        set       fileencodings=utf-8,big5,ucs-bom,sjis,latin1
+        set       guifont=-misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
+        set       guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
+    " }}}
 
     " 按鍵快捷標籤 {{{
 
@@ -164,11 +144,11 @@ endif
         "map [12~ :!mv % =expand("%:h")<CR>
         map [12~ :q \| !mv =expand("%:t ")<CR>
 
+        " 取消windows換行符號: F3
         " :%s/\r//g // ok
         " :%s/^M//g // fail
         " 在linux下也可以用tr 這個指令，來移除^M的Dos換行符號
         " cat oldfile | tr -d '\r' > newfile
-        " 取消windows換行符號: F3
         map OR   :%s/\r//g<CR>
         map [13~ :%s/\r//g<CR>
 
@@ -176,13 +156,13 @@ endif
         map OS  :retab<CR>
         map [14~ :retab<CR>
 
-        " 行複製: ctrl+d
-        imap  <ESC>ddPP<CR>iOA
-        map   ddPP<CR>OA
-
         " 插入日期: ctrl+F8
         imap [19~   <ESC>:read !date<CR>iModify at 
         imap [19;5~ <ESC>:read !date<CR>iModify at 
+
+        " 行複製: ctrl+d
+        imap  <ESC>ddPP<CR>iOA
+        map   ddPP<CR>OA
 
     " }}}
 
