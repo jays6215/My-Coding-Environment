@@ -143,6 +143,7 @@
         " 修改檔案名稱: F2
         "map [12~ :!mv % =expand("%:h")<CR>
         "map [12~ :q \| !mv =expand("%:t ")<CR>
+        map OQ :Rename 
         map [12~ :Rename 
 
         " 取消windows換行符號: F3
@@ -369,6 +370,23 @@
         set undolevels=1000
 
     " }}}
+
+    " 自動切換貼上模式
+    " 可用於 Linux: gnome-terminal / Windows: 新版的 Putty / OSX: 終端機(Terminal)、iterm2
+    " 若不適用 需以 :set paste / :set nopaste 切換
+    if &term =~ "xterm.*"
+        let &t_ti = &t_ti . "\e[?2004h"
+        let &t_te = "\e[?2004l" . &t_te
+        function XTermPasteBegin(ret)
+        set pastetoggle=<Esc>[201~
+        set paste
+        return a:ret
+        endfunction
+        map <expr> <Esc>[200~ XTermPasteBegin("i")
+        imap <expr> <Esc>[200~ XTermPasteBegin("")
+        cmap <Esc>[200~ <nop>
+        cmap <Esc>[201~ <nop>
+    endif
 
     " 分頁標頭設定
     function MyTabLine()
