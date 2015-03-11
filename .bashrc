@@ -171,3 +171,6 @@ stty -ixon
 
 ### New Features: diff ###
 alias diff='colordiff'
+
+### co-bash history ###
+shopt -s histappend PROMPT_COMMAND='history -a'
