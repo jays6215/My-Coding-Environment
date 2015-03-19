@@ -173,4 +173,4 @@ stty -ixon
 alias diff='colordiff'
 
 ### co-bash history ###
-shopt -s histappend PROMPT_COMMAND='history -a'
+#shopt -s histappend PROMPT_COMMAND='history -a'
