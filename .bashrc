@@ -122,7 +122,7 @@ PS1+='\[\033[01;31m\]\u\[\033[00m\]'
 PS1+='\[\033[01;30m\]]\[\033[00m\]@'
 
 PS1+='\[\033[01;33m\]\h\[\033[00m\] at '
-PS1+='\[\033[01;32m\]\t\[\033[00m\] '
+PS1+='\[\033[01;32m\]\D{%m-%d} \t\[\033[00m\] '
 
 PS1+='\[\033[00;35m\] <\[\033[00m\]'
 
@@ -173,4 +173,4 @@ stty -ixon
 alias diff='colordiff'
 
 ### co-bash history ###
-shopt -s histappend PROMPT_COMMAND='history -a'
+#shopt -s histappend PROMPT_COMMAND='history -a'

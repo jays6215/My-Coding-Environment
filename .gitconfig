@@ -19,3 +19,5 @@
 	lg = log --decorate
 	rb = rebase
 	st = status
+[push]
+	default = matching

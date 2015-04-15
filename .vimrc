@@ -235,7 +235,7 @@
         set wildignore=*.o,*.class,*.piyc
 
         " 一行若是太長,則向右延伸到螢幕外邊
-        set nowrap
+        "set nowrap
 
         " 副檔名..
         filetype on
