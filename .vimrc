@@ -4,12 +4,23 @@
 " http://homepage.ntu.edu.tw/~r02921014/paste_to_vimrc.txt
 " http://yslinlinuxrc.googlecode.com/svn-history/r28/trunk/.vimrc
 
+    " digraph setting {{
+        if has("multi_byte")
+            "echo "339"
+            digraph oe 339
+        elseif &encoding == "iso-8859-15"
+            "echo "189"
+            digraph oe 189
+        endif
+    " }}
+
     " 檔案相關設定 {{{
         set       encoding=utf-8
         setglobal fileencoding=utf-8
         set       fileencoding=utf-8
         "set       termencoding=big5
-        set       fileencodings=utf-8,big5,ucs-bom,sjis,latin1
+        set       fileencodings=utf-8,big5,ucs-bom,cp950,sjis,latin1
+        set       fileformats=unix,dos
         set       guifont=-misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
         set       guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
     " }}}
