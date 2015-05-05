@@ -150,14 +150,17 @@ PS1+='\[\033[00;37m\]Files\[\033[00m\] '
 PS1+='\[\033[00;36m\]$(ls --si -s | head -1 | awk '\''{print $2}'\'')\[\033[00m\]'
 
 function formattedGitBranch {
-    _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
+    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
     test -n "$_branch" && echo -e " @\e[0;32m ($_branch)"
 }
 #PS1+='$(formattedGitBranch)'
 
+# http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
+# http://eseth.org/2010/git-in-zsh.html
+# http://c0rp.blogspot.tw/2014/06/add-git-branch-name-and-last-commit-to.html
 function git_prompt() {
     # Get branck-name
-    _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
+    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
     # Get the status of the repo and chose a color accordingly
     local git_status=`git status 2>&1`
     if [[ "$git_status" != *'Not a git repository'* ]]; then
@@ -166,13 +169,19 @@ function git_prompt() {
         elif [[ "$git_status" == *'Changes not staged for commit'* ]]; then
             local ansi=31 # dark red    if need to add
         elif [[ "$git_status" == *'Untracked files:'* ]]; then
-            local ansi=34 # dark blue   if nothing added to commit, but untracked files present
+            local ansi=35 # dark perple if nothing added to commit, but untracked files present
         elif [[ "$git_status" == *'Changes to be committed:'* ]]; then
             local ansi=33 # dark yellow if need to commit
         else
-            local ansi=35 # dark perple if others
+            local ansi=36 # dark cyne if others
         fi
-        echo -e '\033[02;'"$ansi"'m '"($_branch"')'
+        # get current sha1
+        local git_curr_sha1=`git rev-parse --short HEAD`
+        # get stash count
+        #local stashes=`git stash list 2>/dev/null | wc -l`
+
+        #echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m[\033[02;37m'"$git_curr_sha1"'\033[00m] ('"$stashes"' stashed)'
+        echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m(\033[02;37m'"$git_curr_sha1"'\033[00m)'
     fi
 }
 PS1+='$(git_prompt)'
