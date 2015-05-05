@@ -47,12 +47,12 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
     else
-	color_prompt=
+    color_prompt=
     fi
 fi
 
@@ -117,8 +117,7 @@ if ! shopt -oq posix; then
 fi
 ### My PS1 ###
 
-### ┌[rabbit125]@rabbit125-VirtualBox at 03:53:20  <CPU Load:1.13 Uptime:8h11m> ###
-
+### ┌[rabbit125]@rabbit125-UX303LA at 05-05 19:35:24  <CPU Load:0.33 Uptime:20h5m> ###
 PS1='\n'
 PS1+='\[\033[01;30m\]┌[\[\033[00m\]'
 PS1+='\[\033[01;31m\]\u\[\033[00m\]'
@@ -136,7 +135,7 @@ PS1+='\[\033[00;33m\]$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=
 
 PS1+='\[\033[00;35m\]> \[\033[00m\]'
 
-### ├─[~] 1/15 Files 58k ###
+### ├─[~/GitProjects/My-Coding-Environment] 2/3 Files 13k @ master ###
 
 PS1+='\n'
 PS1+='\[\033[01;30m\]├─\[\033[00m\]'
@@ -152,9 +151,31 @@ PS1+='\[\033[00;36m\]$(ls --si -s | head -1 | awk '\''{print $2}'\'')\[\033[00m\
 
 function formattedGitBranch {
     _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
-    test -n "$_branch" && echo -e " @\e[0;32m $_branch"
+    test -n "$_branch" && echo -e " @\e[0;32m ($_branch)"
 }
-PS1+='$(formattedGitBranch)'
+#PS1+='$(formattedGitBranch)'
+
+function git_prompt() {
+    # Get branck-name
+    _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
+    # Get the status of the repo and chose a color accordingly
+    local git_status=`git status 2>&1`
+    if [[ "$git_status" != *'Not a git repository'* ]]; then
+        if [[ "$git_status" == *'nothing to commit'* ]]; then
+            local ansi=32 # dark green  if working directory clean
+        elif [[ "$git_status" == *'Changes not staged for commit'* ]]; then
+            local ansi=31 # dark red    if need to add
+        elif [[ "$git_status" == *'Untracked files:'* ]]; then
+            local ansi=34 # dark blue   if nothing added to commit, but untracked files present
+        elif [[ "$git_status" == *'Changes to be committed:'* ]]; then
+            local ansi=33 # dark yellow if need to commit
+        else
+            local ansi=35 # dark perple if others
+        fi
+        echo -e '\033[02;'"$ansi"'m '"($_branch"')'
+    fi
+}
+PS1+='$(git_prompt)'
 
 ### └──$  ###
 
