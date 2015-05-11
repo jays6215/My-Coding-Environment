@@ -16,8 +16,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=5000
+HISTFILESIZE=10000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -159,12 +159,13 @@ function formattedGitBranch {
 # http://eseth.org/2010/git-in-zsh.html
 # http://c0rp.blogspot.tw/2014/06/add-git-branch-name-and-last-commit-to.html
 function git_prompt() {
-    # Get branck-name
+    ### git branck-name
     local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
-    # Get the status of the repo and chose a color accordingly
+    ### git status of the repo and chose a color accordingly
     local git_status=`git status 2>&1`
     if [[ "$git_status" != *'Not a git repository'* ]]; then
-        if [[ "$git_status" == *'nothing to commit'* ]]; then
+        ### git commit status ###
+        if [[ "$git_status" == *'Your branch is up-to-date'* ]]; then
             local ansi=32 # dark green  if working directory clean
         elif [[ "$git_status" == *'Changes not staged for commit'* ]]; then
             local ansi=31 # dark red    if need to add
@@ -175,13 +176,30 @@ function git_prompt() {
         else
             local ansi=36 # dark cyne if others
         fi
-        # get current sha1
+        #echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m[\033[02;37m'"$git_curr_sha1"'\033[00m] ('"$stashes"' stashed)'
+
+        ### git current commit sha1
         local git_curr_sha1=`git rev-parse --short HEAD`
-        # get stash count
+
+        ### git stash count
         #local stashes=`git stash list 2>/dev/null | wc -l`
 
-        #echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m[\033[02;37m'"$git_curr_sha1"'\033[00m] ('"$stashes"' stashed)'
-        echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m(\033[02;37m'"$git_curr_sha1"'\033[00m)'
+        local git_status='\033[02;'"$ansi"'m'"$_branch"'\033[00m(\033[02;37m'"$git_curr_sha1"'\033[00m)'
+
+        if [[ "$_branch" != *'no branch'* ]]; then
+            ### git local/remote branch counter
+            local new_local_commit_cnt=`diff <(git rev-list HEAD) <(git rev-list origin/$_branch) 2>&1 | grep '<' | wc -l`
+            #echo $new_local_commit_cnt
+            local new_remote_commit_cnt=`diff <(git rev-list HEAD) <(git rev-list origin/$_branch) 2>&1 | grep '>' | wc -l`
+            #echo $new_remote_commit_cnt
+            if [[ "$new_local_commit_cnt" -gt "0" ]]; then
+                git_status=$git_status' \033[01;04;34m+'$new_local_commit_cnt'\033[00m'
+            fi
+            if [[ "$new_remote_commit_cnt" -gt "0" ]]; then
+                git_status=$git_status' \033[01;04;34m-'$new_remote_commit_cnt'\033[00m'
+            fi
+        fi
+        echo -e ' '$git_status
     fi
 }
 PS1+='$(git_prompt)'
