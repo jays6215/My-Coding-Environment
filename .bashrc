@@ -165,7 +165,7 @@ function git_prompt() {
     local git_status=`git status 2>&1`
     if [[ "$git_status" != *'Not a git repository'* ]]; then
         ### git commit status ###
-        if [[ "$git_status" == *'Your branch is up-to-date'* ]]; then
+        if [[ "$git_status" == *'nothing to commit, working directory clean'* ]]; then
             local ansi=32 # dark green  if working directory clean
         elif [[ "$git_status" == *'Changes not staged for commit'* ]]; then
             local ansi=31 # dark red    if need to add
