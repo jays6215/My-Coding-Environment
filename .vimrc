@@ -25,6 +25,17 @@
         set       guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
     " }}}
 
+    " 設定初始 顏色主題 {{{
+        colorscheme default
+        "autocmd BufEnter * colorscheme default
+        autocmd BufEnter *.py  colorscheme molokai
+        "autocmd BufEnter *.cpp colorscheme dante        " red right margin
+        "autocmd BufEnter *.cpp colorscheme darkburn     " too colorless
+        "autocmd BufEnter *.cpp colorscheme candycode    " red right margin, no current underline
+        autocmd BufEnter *.cpp colorscheme 256-jungle    " no 'line' on the top
+        autocmd BufEnter *.c   colorscheme 256-jungle    " no 'line' on the top
+    " }}}
+
     " 按鍵快捷標籤 {{{
 
         " 特殊字元定義: different from terminal and pietty
@@ -344,8 +355,9 @@
         "set textwidth=78
 
         highlight TabLineSel term=bold,underline cterm=bold,underline ctermfg=7 ctermbg=0
-        highlight TabLine    term=bold cterm=bold
+        highlight TabLine    term=bold           cterm=bold
         highlight clear TabLineFill
+        highlight Comment                        cterm=bold
 
         " 狀態列設定
         " 狀態列位置, 當最近的窗口有狀態行時提示

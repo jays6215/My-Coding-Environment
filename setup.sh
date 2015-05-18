@@ -1,10 +1,12 @@
 #!/bin/bash
 cd $(dirname $0)
-for dotfile in .?*
+#for dotfile in .?*
+for dotpathes in `find . -name ".*"`
 do
-    echo "$PWD/$dotfile" $HOME
-    if [ $dotfile != '..' ] && [ $dotfile != '.git' ]
+    if [ $dotpathes != '.' ] && [ $dotpathes != '..' ] && [[ $dotpathes != *"git"* ]]
     then
+        dotfile=${dotpathes#./}
+        #echo "$PWD/$dotfile" $HOME
         ln -Fis "$PWD/$dotfile" $HOME
     fi
 done
