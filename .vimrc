@@ -256,13 +256,15 @@
         " 語法高亮
         syntax   on
         " 256 色
-        "set t_Co=256
+        set t_Co=256
 
         " 暗色系背景, another is 'light'
         set background=dark
         " 設定畫線高亮顯示當前列
         set cursorline
-        " 關掉高亮當前行, 開關設定
+        " 高亮當前行顏色設定
+        highlight CursorLine ctermbg=17
+
         "map [14~ :set invcursorline<CR>
         " 左下角會顯示目前的模式(Visual, Select, Insert)
         set showmode
@@ -356,7 +358,7 @@
         set statusline+=%4*%=\ %8*[\ %2*(%l,%2*%c)%m%8*\ \|\ %9*%p%9*%%%8*\ ]%4*\ \ 
         highlight User4  term=bold      cterm=reverse           ctermfg=0
         highlight User8  term=underline cterm=bold              ctermfg=7
-        highlight User6  ctermfg=7
+        highlight User6                                         ctermfg=7
         highlight User1  term=bold      cterm=bold,underline    ctermfg=1
         highlight User2  term=underline cterm=bold,underline    ctermfg=3
         highlight User3  term=bold      cterm=bold              ctermfg=0
@@ -370,6 +372,13 @@
         set number
         " 調整行號數字寬
         set numberwidth=6
+
+        " 設定 margin 顏色
+        " ref: http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
+        highlight ColorColumn ctermbg=236 guibg=#2c2d27
+        " 設定 Right margin & after-margin
+        set colorcolumn=80
+        "let &colorcolumn="80,".join(range(120,999),",")
 
     " }}}
 
