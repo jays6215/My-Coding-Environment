@@ -219,7 +219,6 @@
         " split up / down screen: shift + p
         "map <S-P> :sp 
 
-        " 上下分割螢幕
 
         " shift by tab key: tab & shift + tab
         map  <Tab> >>
