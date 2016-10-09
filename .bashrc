@@ -8,17 +8,6 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
-HISTFILESIZE=10000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -44,15 +33,14 @@ esac
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
 #force_color_prompt=yes
-
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-    color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -78,29 +66,36 @@ if [ -x /usr/bin/dircolors ]; then
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
-
+    #alias edir='vdir --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -alFh'
-alias la='ls -A'
-alias l='ls -CF'
+## more colorful commands
+alias   tree='tree -C'
+alias   diff='colordiff'
 
-# vi = vim
-alias vi='vim'
-
+### command short-cut ###
+## useful ls aliases
+alias     ll='ls -lFht'
+alias     la='ls -A'
+alias    lsd='ls -alFt | grep /$'
+alias      l='ls -CF'
+## other aliases
+alias        ..='cd ..'
+alias        vi='vim'
+# find out what is taking so much space on your drives!
+alias diskspace='du -S | sort -n -r | less'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias     alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+#########################
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -115,46 +110,98 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+### command history ###
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=5000
+HISTFILESIZE=10000
+
+## append to the history file, don't overwrite it
+shopt -s histappend
+#shopt -s histappend PROMPT_COMMAND='history -a'
+
+## combine multiline commands into one in history
+shopt -s cmdhist
+
+## ignore duplicates, ls without options and built-in commands
+## don't put duplicate lines or lines starting with space in the history.
+## See bash(1) for more options
+HISTCONTROL=ignoreboth # ignoredups & ignorespace
+
+## ignore some common cmd
+export HISTIGNORE="&:ls:ll:[bf]g:exit"
+#######################
+
 ### My PS1 ###
+RESET="\[\017\]"
+NORMAL="\[\033[0m\]"
 
-### ┌[rabbit125]@rabbit125-UX303LA at 05-05 19:35:24  <CPU Load:0.33 Uptime:20h5m> ###
-PS1='\n'
-PS1+='\[\033[01;30m\]┌[\[\033[00m\]'
-PS1+='\[\033[01;31m\]\u\[\033[00m\]'
-PS1+='\[\033[01;30m\]]\[\033[00m\]@'
+FRED0="\[\033[00;31m\]"
+FGRE0="\[\033[00;32m\]"
+FYEL0="\[\033[00;33m\]"
+FBLU0="\[\033[00;34m\]"
+FPUR0="\[\033[00;35m\]"
+FCYA0="\[\033[00;36m\]"
+FWHI0="\[\033[00;37m\]"
 
-PS1+='\[\033[01;33m\]\h\[\033[00m\] at '
-PS1+='\[\033[01;32m\]\D{%m-%d} \t\[\033[00m\] '
+FGRA1="\[\033[01;30m\]"
+FRED1="\[\033[01;31m\]"
+FGRE1="\[\033[01;32m\]"
+FYEL1="\[\033[01;33m\]"
+FBLU1="\[\033[01;34m\]"
+FPUR1="\[\033[01;35m\]"
+FCYA1="\[\033[01;36m\]"
+FWHI1="\[\033[01;37m\]"
 
-PS1+='\[\033[00;35m\] <\[\033[00m\]'
+FRED4="\[\033[04;31m\]"
+FGRE4="\[\033[04;32m\]"
 
-PS1+='\[\033[01;36m\]CPU Load:\[\033[00m\]'
-PS1+='\[\033[00;33m\]$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) \[\033[00m\]'
-PS1+='\[\033[01;35m\]Uptime:\[\033[0m\]'
-PS1+='\[\033[00;33m\]$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)\[\033[00m\]'
+### ┌[rabbit125]@rabbit125-UX303LA at 16:25:07 <CPU Load:0.21 Uptime:1d14h9m> :) ###
+PS1="\n"
+PS1+="${FGRA1}┌[${NORMAL}"
+PS1+="${FRED1}\u${NORMAL}"
+PS1+="${FGRA1}]${NORMAL}@"
 
-PS1+='\[\033[00;35m\]> \[\033[00m\]'
+PS1+="${FYEL1}\h${NORMAL} at "
+PS1+="${FGRE1}\t${NORMAL}"
 
-### ├─[~/GitProjects/My-Coding-Environment] 2/3 Files 13k @ master ###
+PS1+="${FPUR0} <${NORMAL}"
+PS1+="${FCYA1}CPU Load:${NORMAL}"
+PS1+="${FYEL0}$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) ${NORMAL}"
+PS1+="${FPUR1}Uptime:${NORMAL}"
+PS1+="${FYEL0}$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)${NORMAL}"
+PS1+="${FPUR0}>${NORMAL}"
 
-PS1+='\n'
-PS1+='\[\033[01;30m\]├─\[\033[00m\]'
-PS1+='\[\033[00;34m\][\[\033[00m\]'
-PS1+='\[\033[01;34m\]\w\[\033[00m\]'
-PS1+='\[\033[00;34m\]]\[\033[00m\] '
+SMILEY="${FGRE0}:)${NORMAL}"
+FROWNY="${FRED0}:(${NORMAL}"
+SELECT="if [ \$? = 0 ]; then echo \"${SMILEY}\"; else echo \"${FROWNY}\"; fi"
+PS1+=" \`${SELECT}\`"
 
-PS1+='\[\033[04;32m\]$(ls -l | grep "^-" | wc -l | tr -d " ")\[\033[00m\]/'
-PS1+='\[\033[04;31m\]$(ls -1 | wc -l)\[\033[00m\] '
+### ├─[~/GitProjects/My-Coding-Environment] 3/20 Files 3.7M master(e2e46e1) ###
+PS1+="\n"
+PS1+="${FGRA1}├─${NORMAL}"
+PS1+="${FBLU0}[${NORMAL}"
+PS1+="${FBLU1}\w${NORMAL}"
+PS1+="${FBLU0}]${NORMAL}"
 
-PS1+='\[\033[00;37m\]Files\[\033[00m\] '
-PS1+='\[\033[00;36m\]$(ls --si -s | head -1 | awk '\''{print $2}'\'')\[\033[00m\]'
+F_CNT=$(ls -l | grep "^-" | wc -l | tr -d " ")
+FD_CNT=$(ls -1 | wc -l)
+F_SIZE=$(ls --si -s | head -1 | cut -d " " -f 2)
 
-function formattedGitBranch {
-    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
-    test -n "$_branch" && echo -e " @\e[0;32m ($_branch)"
-}
+PS1+=" "
+PS1+="${FGRE4}${F_CNT}${NORMAL}/"
+PS1+="${FRED4}${FD_CNT}${NORMAL} "
+PS1+="${FWHI0}Files${NORMAL} "
+PS1+="${FCYA0}${F_SIZE}${NORMAL}"
+
+## function formattedGitBranch(), now not using ##
+#function formattedGitBranch {
+#    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
+#    test -n "$_branch" && echo -e " @\e[0;32m ($_branch)"
+#}
 #PS1+='$(formattedGitBranch)'
 
+## function git_prompt(), now using ##
 # http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 # http://eseth.org/2010/git-in-zsh.html
 # http://c0rp.blogspot.tw/2014/06/add-git-branch-name-and-last-commit-to.html
@@ -204,24 +251,46 @@ function git_prompt() {
 }
 PS1+='$(git_prompt)'
 
-### └──$  ###
-
-PS1+='\n'
-PS1+='\[\033[01;30m\]└──\[\033[00m\]'
-PS1+='\[\033[01;37m\]$ \[\033[00m\]'
+###└──$  ###
+PS1+="\n"
+PS1+="${FGRA1}└──${NORMAL}"
+PS1+="${FWHI1}$ ${NORMAL}"
 
 export PS1
+##############
 
 #if ["$TERM" = "linux" ]; then
     #alias fbterm='LANG=zh_TW.UTF-8 fbterm'
     #fbterm
 #fi
 
-### use shortcut ctrl+s in linux ###
+### stty displays or changes the characteristics of the terminal ###
+## use shortcut ctrl+s in vim
 stty -ixon
+## let any character restart output, not only start character
+stty ixany
+####################################################################
 
-### New Features: diff ###
-alias diff='colordiff'
-
-### co-bash history ###
-#shopt -s histappend PROMPT_COMMAND='history -a'
+### quick CMDs ###
+up () { cd $(eval printf '../'%.0s {1..$1});}
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+           *.tar.bz2)   tar xvjf $1    ;;
+           *.tar.gz)    tar xvzf $1    ;;
+           *.bz2)       bunzip2 $1     ;;
+           *.rar)       unrar x $1     ;;
+           *.gz)        gunzip $1      ;;
+           *.tar)       tar xvf $1     ;;
+           *.tbz2)      tar xvjf $1    ;;
+           *.tgz)       tar xvzf $1    ;;
+           *.zip)       unzip $1       ;;
+           *.Z)         uncompress $1  ;;
+           *.7z)        7z x $1        ;;
+           *)           echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+}
+##################

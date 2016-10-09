@@ -149,8 +149,8 @@
         set showtabline=2
         " GUI pure-text tabline
         set guioptions-=e
-        " Known width char, use two column width to show it
-        set ambiwidth=double
+        " unknown width of char, use two column width to show it, single or double
+        set ambiwidth=single
         " use '...' to replace to too long tabline
         let tabEllipsis ='...'
         " user difined tabpage
