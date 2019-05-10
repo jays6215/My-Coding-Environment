@@ -156,6 +156,18 @@
         " user difined tabpage
         set tabline=%!MyTabLine()
 
+        " left/right tabpage changing: ctrl + PageUp / PageDown
+        map <C-PageUp>    :tabp<CR>
+        imap <C-PageUp>   <Esc>:tabp<CR>i
+        map <C-PageDown>  :tabn<CR>
+        imap <C-PageDown> <Esc>:tabn<CR>i
+
+        "up/down quickly: ctrl + Up / Down
+        map <C-Up>       15k
+        imap <C-Up>      <Esc><C-Up>i
+        map <C-Down>     15j
+        imap <C-Down>    <Esc><C-Down>i
+
         " left/right tabpage changing: ctrl + left / right
         map  <C-Left>  :tabp<CR>
         "imap <C-Left>  <Esc>:tabp<CR>i

@@ -1,3 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =1
+let g:netrw_dirhist_cnt =3
 let g:netrw_dirhist_1='/home/rabbit125/GitProjects/My-Coding-Environment/.vim'
+let g:netrw_dirhist_2='/home/rabbit125/下載'
+let g:netrw_dirhist_3='/home/rabbit125/下載/sublime_text_3'

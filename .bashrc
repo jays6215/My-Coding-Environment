@@ -166,10 +166,16 @@ PS1+="${FYEL1}\h${NORMAL} at "
 PS1+="${FGRE1}\t${NORMAL}"
 
 PS1+="${FPUR0} <${NORMAL}"
-PS1+="${FCYA1}CPU Load:${NORMAL}"
-PS1+="${FYEL0}$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) ${NORMAL}"
-PS1+="${FPUR1}Uptime:${NORMAL}"
-PS1+="${FYEL0}$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)${NORMAL}"
+
+PS1+='\[\033[01;36m\]CPU Load:\[\033[00m\]'
+PS1+='\[\033[00;33m\]$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) \[\033[00m\]'
+PS1+='\[\033[01;35m\]Uptime:\[\033[0m\]'
+PS1+='\[\033[00;33m\]$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)\[\033[00m\]'
+# PS1+="${FCYA1}CPU Load:${NORMAL}"
+# PS1+="${FYEL0}$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) ${NORMAL}"
+# PS1+="${FPUR1}Uptime:${NORMAL}"
+# PS1+="${FYEL0}$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)${NORMAL}"
+
 PS1+="${FPUR0}>${NORMAL}"
 
 SMILEY="${FGRE0}:)${NORMAL}"
@@ -189,10 +195,14 @@ FD_CNT=$(ls -1 | wc -l)
 F_SIZE=$(ls --si -s | head -1 | cut -d " " -f 2)
 
 PS1+=" "
-PS1+="${FGRE4}${F_CNT}${NORMAL}/"
-PS1+="${FRED4}${FD_CNT}${NORMAL} "
-PS1+="${FWHI0}Files${NORMAL} "
-PS1+="${FCYA0}${F_SIZE}${NORMAL}"
+# PS1+="${FGRE4}${F_CNT}${NORMAL}/"
+# PS1+="${FRED4}${FD_CNT}${NORMAL} "
+# PS1+="${FWHI0}Files${NORMAL} "
+# PS1+="${FCYA0}${F_SIZE}${NORMAL}"
+PS1+='\[\033[04;32m\]$(ls -l | grep "^-" | wc -l | tr -d " ")\[\033[00m\]/'
+PS1+='\[\033[04;31m\]$(ls -1 | wc -l)\[\033[00m\] '
+PS1+='\[\033[00;37m\]Files\[\033[00m\] '
+PS1+='\[\033[00;36m\]$(ls --si -s | head -1 | awk '\''{print $2}'\'')\[\033[00m\]'
 
 ## function formattedGitBranch(), now not using ##
 #function formattedGitBranch {
