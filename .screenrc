@@ -1,30 +1,41 @@
 ﻿
-#Start message
+# Start message
 startup_message off
 bell_msg ""
+# No bell in screen
+vbell off
 
 # Set default encoding using utf8
 defutf8 on
 
+
+
 # Refresh the display when exiting programs
 altscreen on
 
-#bind f eval "caption splitonly" "hardstatus ignore"
-#bind F eval "caption always"    "hardstatus alwayslastline"
+# bind f eval "caption splitonly" "hardstatus ignore"
+# bind F eval "caption always"    "hardstatus alwayslastline"
 
-# 增加熱鍵 「Alt+z」 , 「Alt+x」切換視窗
-# 使用這兩個快捷鍵來切換左右視窗
+# "alt+z", "alt+x" to next-page and pre-page
 bindkey ^[z prev
 bindkey ^[x next
-bindkey "^f" focus
+bindkey m title
 
-# Ctrl + n : 新增子視窗(C-a c)
-bindkey "^t" screen
+bindkey Z number -1
+bindkey X number +1
 
-# Ctrl + r : 清理當前視窗(C-a c)
-bindkey "^r" clear
+#bindkey "^f" focus
 
-# 指定 screen 使用 utf8 編碼
+# "ctrl+x" to new screen (C-a c)
+bindkey "^x" screen
+
+# "ctrl+r" to clear shell (C-a c)
+#bindkey "^r" clear
+
+# "ctrl+q" to clear shell (C-a S-k in csh) (C-a k)
+bindkey "^q" kill
+
+# utf-8 encoding in screen
 defencoding utf8
 # Set default encoding using utf8
 defutf8 on
@@ -33,20 +44,26 @@ defutf8 on
 altscreen on
 
 # Window numbering starts at 1, not 0.
-bind c screen 1
-bind ^c screen 1
-bind 0 select 10
-screen 1
+#bind c screen 1
+#bind ^c screen 1
+#bind ^n screen 1
+#bind 0 select 10
+#screen 1
 
-# 設定 screen 可以往上卷的行數 (scroll back)
+# Number of lines that screen could be scrolled back
 defscrollback 10000
 
 # Dynamic title
-shelltitle '$|bash'
+shelltitle "$ |bash"
 
 #caption    always        "%{+b rk}%H%{gk} |%c %{yk}%d.%m.%Y | %72=Load: %l %{wk}"
-caption always "%{.KW} %-w%{.bW}%n %t%{.KW}%+w"
+caption always "%{.kK} %-w%{+b .bY}%n %t%{-b .kK}%+w"
+
 #hardstatus alwayslastline "%?%{yk}%-Lw%?%{wb}%n*%f %t%?(%u)%?%?%{yk}%+Lw%?"
 #hardstatus alwayslastline "Host: %H Date: %D-%M-%Y: Load: %l "
-hardstatus alwayslastline "%{w} [screen %n]%=%{M}%e %{G}%H %{Y}%c %{R}%Y/%m/%d %{C}Load: %l %{w}"
-
+hardstatus alwayslastline "%{w} [screen %n]%=No.%{M}% %{G}%1` %{w}// %{Y}%Y-%m-%d %D %{R}%0c%a %{w}// %{M}%2`%{w} // %{B}%3` %{C}Load: %l %{w}"
+# backtick id lifespan autorefresh cmd args...
+# http://unix.stackexchange.com/questions/195209/how-can-i-add-the-session-name-to-my-screen-status-display
+backtick 1 1800 1800  sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+backtick 2 3600 3600  sh -c 'echo $(/usr/bin/lsb_release -i | cut -f2) $(/usr/bin/lsb_release -r | cut -f2)'
+backtick 3 3600 3600  sh -c '/usr/bin/uptime | grep --color=no -o "[0-9]* users"'

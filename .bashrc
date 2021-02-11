@@ -60,38 +60,6 @@ xterm*|rxvt*)
     ;;
 esac
 
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-    #alias edir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-## more colorful commands
-alias   tree='tree -C'
-alias   diff='colordiff'
-
-### command short-cut ###
-## useful ls aliases
-alias     ll='ls -lFht'
-alias     la='ls -A'
-alias    lsd='ls -alFt | grep /$'
-alias      l='ls -CF'
-## other aliases
-alias        ..='cd ..'
-alias        vi='vim'
-# find out what is taking so much space on your drives!
-alias diskspace='du -S | sort -n -r | less'
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias     alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-#########################
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -111,177 +79,197 @@ if ! shopt -oq posix; then
   fi
 fi
 
-### command history ###
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
-HISTFILESIZE=10000
-
-## append to the history file, don't overwrite it
-shopt -s histappend
-#shopt -s histappend PROMPT_COMMAND='history -a'
-
-## combine multiline commands into one in history
-shopt -s cmdhist
-
-## ignore duplicates, ls without options and built-in commands
-## don't put duplicate lines or lines starting with space in the history.
-## See bash(1) for more options
-HISTCONTROL=ignoreboth # ignoredups & ignorespace
-
-## ignore some common cmd
-export HISTIGNORE="&:ls:ll:[bf]g:exit"
-#######################
-
-### My PS1 ###
-RESET="\[\017\]"
-NORMAL="\[\033[0m\]"
-
-FRED0="\[\033[00;31m\]"
-FGRE0="\[\033[00;32m\]"
-FYEL0="\[\033[00;33m\]"
-FBLU0="\[\033[00;34m\]"
-FPUR0="\[\033[00;35m\]"
-FCYA0="\[\033[00;36m\]"
-FWHI0="\[\033[00;37m\]"
-
-FGRA1="\[\033[01;30m\]"
-FRED1="\[\033[01;31m\]"
-FGRE1="\[\033[01;32m\]"
-FYEL1="\[\033[01;33m\]"
-FBLU1="\[\033[01;34m\]"
-FPUR1="\[\033[01;35m\]"
-FCYA1="\[\033[01;36m\]"
-FWHI1="\[\033[01;37m\]"
-
-FRED4="\[\033[04;31m\]"
-FGRE4="\[\033[04;32m\]"
-
-### ┌[rabbit125]@rabbit125-UX303LA at 16:25:07 <CPU Load:0.21 Uptime:1d14h9m> :) ###
-PS1="\n"
-PS1+="${FGRA1}┌[${NORMAL}"
-PS1+="${FRED1}\u${NORMAL}"
-PS1+="${FGRA1}]${NORMAL}@"
-
-PS1+="${FYEL1}\h${NORMAL} at "
-PS1+="${FGRE1}\t${NORMAL}"
-
-PS1+="${FPUR0} <${NORMAL}"
-
-PS1+='\[\033[01;36m\]CPU Load:\[\033[00m\]'
-PS1+='\[\033[00;33m\]$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) \[\033[00m\]'
-PS1+='\[\033[01;35m\]Uptime:\[\033[0m\]'
-PS1+='\[\033[00;33m\]$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)\[\033[00m\]'
-# PS1+="${FCYA1}CPU Load:${NORMAL}"
-# PS1+="${FYEL0}$(temp=$(cat /proc/loadavg) && echo ${temp%% *}) ${NORMAL}"
-# PS1+="${FPUR1}Uptime:${NORMAL}"
-# PS1+="${FYEL0}$(temp=$(cat /proc/uptime) && upSec=${temp%%.*} ; let secs=$((${upSec}%60)) ; let mins=$((${upSec}/60%60)) ; let hours=$((${upSec}/3600%24)) ; let days=$((${upSec}/86400)) ; if [ ${days} -ne 0 ]; then echo -n ${days}d; fi ; echo -n ${hours}h${mins}m)${NORMAL}"
-
-PS1+="${FPUR0}>${NORMAL}"
-
-SMILEY="${FGRE0}:)${NORMAL}"
-FROWNY="${FRED0}:(${NORMAL}"
-SELECT="if [ \$? = 0 ]; then echo \"${SMILEY}\"; else echo \"${FROWNY}\"; fi"
-PS1+=" \`${SELECT}\`"
-
-### ├─[~/GitProjects/My-Coding-Environment] 3/20 Files 3.7M master(e2e46e1) ###
-PS1+="\n"
-PS1+="${FGRA1}├─${NORMAL}"
-PS1+="${FBLU0}[${NORMAL}"
-PS1+="${FBLU1}\w${NORMAL}"
-PS1+="${FBLU0}]${NORMAL}"
-
-F_CNT=$(ls -l | grep "^-" | wc -l | tr -d " ")
-FD_CNT=$(ls -1 | wc -l)
-F_SIZE=$(ls --si -s | head -1 | cut -d " " -f 2)
-
-PS1+=" "
-# PS1+="${FGRE4}${F_CNT}${NORMAL}/"
-# PS1+="${FRED4}${FD_CNT}${NORMAL} "
-# PS1+="${FWHI0}Files${NORMAL} "
-# PS1+="${FCYA0}${F_SIZE}${NORMAL}"
-PS1+='\[\033[04;32m\]$(ls -l | grep "^-" | wc -l | tr -d " ")\[\033[00m\]/'
-PS1+='\[\033[04;31m\]$(ls -1 | wc -l)\[\033[00m\] '
-PS1+='\[\033[00;37m\]Files\[\033[00m\] '
-PS1+='\[\033[00;36m\]$(ls --si -s | head -1 | awk '\''{print $2}'\'')\[\033[00m\]'
-
-## function formattedGitBranch(), now not using ##
-#function formattedGitBranch {
-#    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
-#    test -n "$_branch" && echo -e " @\e[0;32m ($_branch)"
-#}
-#PS1+='$(formattedGitBranch)'
-
-## function git_prompt(), now using ##
-# http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
-# http://eseth.org/2010/git-in-zsh.html
-# http://c0rp.blogspot.tw/2014/06/add-git-branch-name-and-last-commit-to.html
-function git_prompt() {
-    ### git branck-name
-    local _branch="$(git branch 2>/dev/null | sed -e "/^\s/d" -e "s/^\*\s//")"
-    ### git status of the repo and chose a color accordingly
-    local git_status=`git status 2>&1`
-    if [[ "$git_status" != *'Not a git repository'* ]]; then
-        ### git commit status ###
-        if [[ "$git_status" == *'nothing to commit, working directory clean'* ]]; then
-            local ansi=32 # dark green  if working directory clean
-        elif [[ "$git_status" == *'Changes not staged for commit'* ]]; then
-            local ansi=31 # dark red    if need to add
-        elif [[ "$git_status" == *'Untracked files:'* ]]; then
-            local ansi=35 # dark perple if nothing added to commit, but untracked files present
-        elif [[ "$git_status" == *'Changes to be committed:'* ]]; then
-            local ansi=33 # dark yellow if need to commit
-        else
-            local ansi=36 # dark cyne if others
-        fi
-        #echo -e ' \033[02;'"$ansi"'m'"$_branch"'\033[00m[\033[02;37m'"$git_curr_sha1"'\033[00m] ('"$stashes"' stashed)'
-
-        ### git current commit sha1
-        local git_curr_sha1=`git rev-parse --short HEAD`
-
-        ### git stash count
-        #local stashes=`git stash list 2>/dev/null | wc -l`
-
-        local git_status='\033[02;'"$ansi"'m'"$_branch"'\033[00m(\033[02;37m'"$git_curr_sha1"'\033[00m)'
-
-        if [[ "$_branch" != *'no branch'* ]]; then
-            ### git local/remote branch counter
-            local new_local_commit_cnt=`diff <(git rev-list HEAD) <(git rev-list origin/$_branch) 2>&1 | grep '<' | wc -l`
-            #echo $new_local_commit_cnt
-            local new_remote_commit_cnt=`diff <(git rev-list HEAD) <(git rev-list origin/$_branch) 2>&1 | grep '>' | wc -l`
-            #echo $new_remote_commit_cnt
-            if [[ "$new_local_commit_cnt" -gt "0" ]]; then
-                git_status=$git_status' \033[01;04;34m+'$new_local_commit_cnt'\033[00m'
-            fi
-            if [[ "$new_remote_commit_cnt" -gt "0" ]]; then
-                git_status=$git_status' \033[01;04;34m-'$new_remote_commit_cnt'\033[00m'
-            fi
-        fi
-        echo -e ' '$git_status
-    fi
-}
-PS1+='$(git_prompt)'
-
-###└──$  ###
-PS1+="\n"
-PS1+="${FGRA1}└──${NORMAL}"
-PS1+="${FWHI1}$ ${NORMAL}"
-
-export PS1
-##############
-
 #if ["$TERM" = "linux" ]; then
     #alias fbterm='LANG=zh_TW.UTF-8 fbterm'
     #fbterm
 #fi
 
-### stty displays or changes the characteristics of the terminal ###
-## use shortcut ctrl+s in vim
-stty -ixon
-## let any character restart output, not only start character
-stty ixany
-####################################################################
+#------------#
+### My PS1 ###
+#------------#
+. $HOME/.bashrc.ps1
 
+#------------------------------------------------------------------#
+### stty displays or changes the characteristics of the terminal ###
+#------------------------------------------------------------------#
+if [ -t 0 ]; then
+    ## use shortcut ctrl+s in vim
+    stty -ixon
+    ## let any character restart output, not only start character
+    stty ixany
+    ## check to see if the window size has changed (prevents line-editing from going weird if you resize your terminal window)
+    shopt -s checkwinsize
+    ## send both CR/LF
+    stty onlcr
+    ## fix issue: backspace does not work properly
+    stty erase '^?'
+fi
+
+#-------------------#
+### command alias ###
+#-------------------#
+#alias      wc='/usr/local/bin/wc'
+alias       ls='/bin/ls --color=auto'
+alias pcregrep='pcregrep --color=auto'
+
+## auto-color related
+alias   tree='tree -C'
+alias    dir='dir --color=auto'
+alias   grep='grep --color=auto'
+alias  fgrep='fgrep --color=auto'
+alias  egrep='egrep --color=auto'
+
+## grep color related
+export GREP_COLOR=32
+
+## ls color related
+export CLICOLOR=YES
+export LSCOLORS=ExGxFxdxCxDxDxhbadExEx
+
+## terminal color set
+export TERM=xterm-256color
+
+## useful ls aliases
+alias     ll='ls -lFht'
+alias     la='ls -A'
+alias    lsd='ls -alFth | grep ^d'
+alias    lsl='ls -alFth | grep ^l'
+alias    lsf='ls -alFth | grep ^-'
+alias      l='ls -CF'
+alias   diff='colordiff'
+
+## This is GOLD for finding out what is taking so much space on your drives!
+alias      d='du -cSh * | sort -hr | head -n 25'
+
+## other aliases
+alias   ..='cd ..'
+alias gvim='gvim -p'
+alias  vim='vim -p'
+alias   vi='vim'
+
+## cancel warning
+#unalias rm
+unalias rm 2>/dev/null
+#unalias cp
+unalias cp 2>/dev/null
+
+## X11 DISPLAY & XAUTHORITY attachment
+export XAUTHORITY=$HOME/.Xauthority
+saveDisplay() {
+    # Write latest bash display to a file, This is used to 
+    # update running bash sessions for a "screen -r"
+    echo "export DISPLAY=$DISPLAY" > ~/.XDISPLAY
+    echo "export XAUTHORITY=$XAUTHORITY" >> ~/.XDISPLAY
+}
+export -f saveDisplay
+
+updateNewSessionDisplay() {
+    # This will only update the environment for new windows
+    newDispaly="$(cat ~/.XDISPLAY | cut -d"=" -f2 | head -n 1)"
+    newXauthority="$(cat ~/.XDISPLAY | cut -d"=" -f2 | tail -n 1)"
+    echo "old DISPLAY = $DISPLAY"
+    echo "new DISPLAY = $newDispaly"
+    screen -X setenv DISPLAY $newDispaly
+    screen -X setenv XAUTHORITY "$newXauthority"
+}
+export -f updateNewSessionDisplay
+
+updateOldSessionDisplay() {
+    # run this to update env variable in old sessions
+    source ~/.XDISPLAY
+}
+export -f updateOldSessionDisplay
+
+# https://unix.stackexchange.com/questions/108873/removing-a-directory-from-path/291611#291611
+# usage example 1 (in script file)
+#     LD_LIBRARY_PATH=$(removeEnvPath $LD_LIBRARY_PATH "/u/syu/my_disk/large_playground/pc_dev_3_fpga_dev/linux_a_64/lib")
+# usage example 2 (in command line)
+#     $ setenv LD_LIBRARY_PATH $(removeEnvPath $LD_LIBRARY_PATH /u/syu/my_disk/large_playground/pc_dev_3_fpga_dev/linux_a_64/lib)
+function removeEnvPath {
+    curEnv=$1
+    delTar=$2
+    # Delete path by parts so we can never accidentally remove sub paths
+    curEnv=${curEnv//":$2:"/":"} # delete any instances in the middle
+    curEnv=${curEnv/#"$2:"/} # delete any instance at the beginning
+    curEnv=${curEnv/%":$2"/} # delete any instance in the at the end
+    echo $curEnv
+}
+export -f removeEnvPath
+
+alias screen='saveDisplay && screen'
+
+#-------------------------#
+### key-binding related ###
+#-------------------------#
+## quick move on command-line & quick command search
+if [[ $- == *i* ]]
+then
+    bind '"\e[A": history-search-backward' # up cmd search
+    bind '"\e[B": history-search-forward'  # down cmd search
+    bind '"[1;5D": backward-word'        # ctrl+left
+    bind '"[1;5C": forward-word'         # ctrl+right
+    #bind '"[6~": end-of-line'             # PageDown
+    #bind '"[5~": beginning-of-line'       # PageUp
+fi
+
+#--------------------#
+### additional bin ###
+#--------------------#
+
+#-----------------#
+### CMD History ###
+#-----------------#
+HISTSIZE=2000
+HISTFILESIZE=3000
+
+## Combine multiline commands into one in history
+shopt -s cmdhist
+
+## Ignore duplicates, ls without options and builtin commands
+# HISTCONTROL flag
+#    1. ignoreboth
+#    2. ignoredups
+#    3. ignorespace
+#    4. erasedups
+
+## Avoid duplicates
+#export HISTCONTROL=ignoreboth:erasedups
+
+## https://bbs.archlinux.org/viewtopic.php?id=150992
+## when I exit this Bash session, append its history to the bash_history file
+#shopt -s histappend
+
+## every time I run a command append it to the bash_history file
+#export PROMPT_COMMAND='history -a'
+
+## After each command, append to the history file and reread it
+## https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
+#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
+## “ignoredups” and “erasedups” setting conflict with common history across sessions
+## https://unix.stackexchange.com/questions/18212/bash-history-ignoredups-and-erasedups-setting-conflict-with-common-history/18443#18443
+HISTCONTROL=ignoredups:erasedups:ignorespace
+shopt -s histappend
+
+PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+#PROMPT_COMMAND="$PROMPT_COMMAND; history -n; history -w; history -c; history -r"
+
+#HISTCONTROL=ignoredups:erasedups:ignorespace
+#shopt -s histappend
+#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
+## Ignore some common cmd
+export HISTIGNORE="&:ls:ll:[bf]g:exit:pwd:"
+
+#---------------#
+### Time Zone ###
+#---------------#
+export TZ="Asia/Taipei"
+#export LC_ALL="en_US.UTF-8"
+
+#----------------#
 ### quick CMDs ###
+#----------------#
 up () { cd $(eval printf '../'%.0s {1..$1});}
 extract () {
    if [ -f $1 ] ; then
@@ -303,4 +291,3 @@ extract () {
        echo "'$1' is not a valid file!"
    fi
 }
-##################

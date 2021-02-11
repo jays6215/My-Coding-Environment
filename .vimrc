@@ -22,7 +22,9 @@
         set       fileencodings=utf-8,big5,ucs-bom,cp950,sjis,latin1
         set       fileformats=unix,dos
         set       guifont=-misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
+        set       guifont=Liberation\ Mono\ 14
         set       guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
+
     " }}}
 
     " Initail color settings {{{
@@ -33,7 +35,11 @@
         "autocmd BufEnter *.cpp colorscheme candycode     " red right margin, no current underline
         "autocmd BufEnter *.cpp colorscheme 256-jungle    " no 'line' on the top
         "autocmd BufEnter *.c   colorscheme 256-jungle    " no 'line' on the top
-        colorscheme default
+        "colorscheme default
+        if has('gui_running')
+            colorscheme desert
+        endif
+        syntax on
     " }}}
 
     " Key mappings {{{
@@ -57,6 +63,11 @@
         map! [4~ <End>
         map! OF  <End>
 
+        map  [1;5A  <C-Up>
+        map! [1;5A  <C-Up>
+        map  [1;5B  <C-Down>
+        map! [1;5B  <C-Down>
+
         map  [1;5D  <C-Left>
         map  [D     <C-Left>
         map! [1;5D  <C-Left>
@@ -66,6 +77,12 @@
         map! [1;5C  <C-Right>
         map! [C     <C-Right>
 
+
+
+        map  [1;3A  <A-Up>
+        map! [1;3A  <A-Up>
+        map  [1;3B  <A-Down>
+        map! [1;3B  <A-Down>
         map  [1;3D  <A-Left>
         map! [1;3D  <A-Left>
         map  [1;3C  <A-Right>
@@ -142,13 +159,14 @@
 
         " quick saving: ctrl + s in ~/.shrc stty -ixon
         map  <C-s> :w<CR>
-        imap <C-s> <ESC>:w<CR>i
+        imap <C-s> <ESC>:w<CR>i<RIGHT>
 
         " tabpage settings
-        " fix tabline, always on
-        set showtabline=2
+        set tabpagemax=30
         " GUI pure-text tabline
         set guioptions-=e
+        " fix tabline, always on
+        set showtabline=2
         " unknown width of char, use two column width to show it, single or double
         set ambiwidth=single
         " use '...' to replace to too long tabline
@@ -157,16 +175,16 @@
         set tabline=%!MyTabLine()
 
         " left/right tabpage changing: ctrl + PageUp / PageDown
-        map <C-PageUp>    :tabp<CR>
-        imap <C-PageUp>   <Esc>:tabp<CR>i
-        map <C-PageDown>  :tabn<CR>
-        imap <C-PageDown> <Esc>:tabn<CR>i
+        map  <C-PageUp>    :tabp<CR>
+        imap <C-PageUp>    <Esc>:tabp<CR>i
+        map  <C-PageDown>  :tabn<CR>
+        imap <C-PageDown>  <Esc>:tabn<CR>i
 
-        "up/down quickly: ctrl + Up / Down
-        map <C-Up>       15k
-        imap <C-Up>      <Esc><C-Up>i
-        map <C-Down>     15j
-        imap <C-Down>    <Esc><C-Down>i
+        " up/down quickly: ctrl + Up / Down
+        map  <C-Up>    15k
+        imap <C-Up>    <Esc><C-Up>i
+        map  <C-Down>  15j
+        imap <C-Down>  <Esc><C-Down>i
 
         " left/right tabpage changing: ctrl + left / right
         map  <C-Left>  :tabp<CR>
@@ -187,20 +205,21 @@
         "map <C-PageUp>   :tabp<CR>
         "map <C-PageDown> :tabn<CR>
 
-        " new tabpage: ctrl + n
-        " stop for short-cut: ctrt + t
+        " [DISABLE] open file: ctrt + t
         "map  <C-t> :tabnew<CR>
         "imap <C-t> <ESC>:tabnew<CR>i
-        map  <C-n> :tabnew<CR>
+        " open file with relative path of the DIR: ctrl + n
+        " http://vim.wikia.com/wiki/Insert_current_filename
+        " http://vim.wikia.com/wiki/Get_the_name_of_the_current_file
+        map <C-n> :tabe <C-r>=expand('%:r')<CR>
+        "imap <C-n> <ESC>:tabe <C-r>=expand('%:r')<CR>
+        " new tabpage: ctrl + n
+        "map  <C-n> :tabnew<CR>
         "imap <C-n> <ESC>:tabnew<CR>i
 
-        " open file: ctrl + o
-        map  <C-o> :tabe 
-        imap <C-o> <ESC>:tabe 
-
-        " new tabpage(2): ctrl + p
-        "map  <C-p> :tabnext<CR>
-        "imap <C-p> <ESC>:tabnext<CR>i
+        " [DISABLE] open file: ctrl + o
+        "map  <C-o> :tabe 
+        "imap <C-o> <ESC>:tabe 
 
         " close file: ctrl + w
         "map  <C-w> :tabclose<CR>
@@ -213,13 +232,15 @@
         map  <C-z> u
         imap <C-z> <ESC>ui
 
+        " back editing
+        imap <C-r> <ESC>i
+
         " copy line: ctrl + d
         imap <C-d> <Esc>ddPP<CR>iOA
         map  <C-d> ddPP<CR>OA
 
         " copy the text in visual mode
         map <C-c> "+y<CR>
-
 
         " search for visually selected text: ctrl + f
         " http://vim.wikia.com/wiki/Search_for_visually_selected_text
@@ -231,6 +252,16 @@
         " split up / down screen: shift + p
         "map <S-P> :sp 
 
+        " switch between split windows
+        " http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
+        " go left window
+        map <silent> <C-h> :wincmd h<CR>
+        " go down window
+        map <silent> <C-j> :wincmd j<CR>
+        " go up window
+        map <silent> <C-k> :wincmd k<CR>
+        " go right window
+        map <silent> <C-l> :wincmd l<CR>
 
         " shift by tab key: tab & shift + tab
         map  <Tab> >>
@@ -242,21 +273,36 @@
         map <F2> :Rename 
         map [12~ :Rename 
 
-        " remoce windows's newline char: F3
-        " :%s/\r//g // ok
-        " :%s/^M//g // fail
-        " could also use "tr" in linux command to remove "^M" char
-        " cat oldfile | tr -d '\r' > newfile
-        map <F3>   :%s/\r//g<CR>
-        map [13~ :%s/\r//g<CR>
+        " replace all strings which are same as string inside register*("*),
+        " and get back to orignal line specifying the replacement
+        "     1. save string into register *
+        "     2. press <F3>   = all lines in whole file
+        "           or <C-F3> = all lines within a visual selection
+        "                     = replace all matchings in current line
+        "     *. replace "newline" char NULL, use '\r'
+        "         :%s/\r//g // ok
+        "         :%s/^M//g // fail
+        "         could also use "tr" in linux command to remove "^M" char
+        "         $ cat oldfile | tr -d '\r' > newfile
+
+        map <F3>    :%s/<C-R>*//g\|''
+        map [13~  :%s/<C-R>*//g\|''
+
+        map <C-F3>  :s/<C-R>*//g\|''
+        map [1;5R :s/<C-R>*//g\|''
+
 
         " replace tab char in the file: F4
         map <F4>   :retab<CR>
         map [14~ :retab<CR>
 
         " reload file & refresh unchanged files : F5
-        map <F5> :edit<CR>
+        map <F5> :edit<CR>zz
         set autoread
+
+        " file-directory trEE(nerd-TRee): C-F6
+        map [17;5~ :NERDTreeToggle<CR>
+        let NERDTreeQuitOnOpen=1
 
         " open/close taglist: F6
         map <F6> :TlistToggle<CR>
@@ -310,41 +356,43 @@
 
         "nnoremap * #``
         "nnoremap * :keepjumps normal! #``<CR>
-        nnoremap * *#"*yiw
+        nnoremap * *#"+yiw
 
         "nnoremap # *``
         "nnoremap # :keepjumps normal! *``<CR>
-        nnoremap # #*"+*yiw
+        nnoremap # #*"+yiw
 
         " save & show full path of current file: F10
         map <F10> :call EasyCopyFilePath()<CR>
+        " copy all opend files' path: ctrl + F10
+        map [21;5~ :CopyAllFullPaths vf
 
         " show related Function name to current line: ctrl + F12
         map [23;5~ :call ShowFuncName()<CR>
+        map <F11> :call ShowFuncName()<CR>
         map <C-F12> :call ShowFuncName()<CR>
-
+        " [23~    = <F11>
+        " [23;5~  = <C-F11>
+        " [24~    = <F12>
+        " [24;5~  = <C-F12>
     " }}}
 
     " Settings for specific files {{{
 
         " for files named *.c / *.cpp / *.py, use program's indent
-        autocmd BufNewFile,BufRead *.c   set cindent
-        autocmd BufNewFile,BufRead *.cpp set cindent
-        autocmd BufNewFile,BufRead *.py  set cindent
+        "autocmd BufNewFile,BufRead *.c   set cindent
+        "autocmd BufNewFile,BufRead *.cpp set cindent
+        "autocmd BufNewFile,BufRead *.py  set cindent
 
         " for files named *.c / *.cpp / *.py, use autoindent to match line above
-        autocmd BufNewFile,BufRead *.c   set autoindent
-        autocmd BufNewFile,BufRead *.cpp set autoindent
-        autocmd BufNewFile,BufRead *.py  set autoindent
+        "autocmd BufNewFile,BufRead *.c   set autoindent
+        "autocmd BufNewFile,BufRead *.cpp set autoindent
+        "autocmd BufNewFile,BufRead *.py  set autoindent
 
         " for files named *.c / *.cpp / *.py, use smart indent
-        autocmd BufNewFile,BufRead *.c   set smartindent
-        autocmd BufNewFile,BufRead *.cpp set smartindent
-        autocmd BufNewFile,BufRead *.py  set smartindent
-
-        " use tab char in Makefile
-        " use command :verbose set expandtab? to confirm
-        autocmd FileType make setlocal noexpandtab
+        "autocmd BufNewFile,BufRead *.c   set smartindent
+        "autocmd BufNewFile,BufRead *.cpp set smartindent
+        "autocmd BufNewFile,BufRead *.py  set smartindent
 
         " use C++'s autocompletion
         set nocp
@@ -373,7 +421,7 @@
             let &t_te = "\<Esc>[?47l"
         endif
 
-    " VIM's controlling settings }}}
+    " VIM's controlling settings {{{
 
         " show file sub-name
         filetype on
@@ -384,8 +432,8 @@
         set nocompatible
         " set no-bomb in utf-8 file
         set nobomb
-        " open mouse mode
-        "set mouse=a
+        " open mouse mode, could move by mouse, mode = n(normal), v(visual), i(insert), c(command), a(all modes)
+        set mouse=i
         " middle mouse key
         "map <S-Insert> <MiddleMouse>
 
@@ -407,15 +455,17 @@
         set directory=~/tmp,/var/tmp/vi.recover,/tmp,.
 
         " crontabs must be edited in place
-        au BufRead /tmp/crontab* :set backupcopy=yes
+        autocmd BufRead /tmp/crontab* :set backupcopy=yes
         " use system clipboard to save no-name variables(@", @+ or @*)
         "set clipboard=unnamed
         " for VIM >=7.3.74, automatically use the + buffer (the system clipboard) by default
         set clipboard=unnamedplus
         " read / write a .viminfo file, don't store more
-        set viminfo='20,\"50
+        " https://stackoverflow.com/questions/17812111/default-buffer-size-to-copy-paste-in-vim
+        " using 'vim --startuptime vim.log' to check the vims' starting time
+        set viminfo='20,<50,s1000
         " let VIM remember the location in last editing
-        au BufReadPost * if line("'\"") > 0|if line("'\"")
+        autocmd BufReadPost * if line("'\"") > 0|if line("'\"")
         \ <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
         " not generate .nu file
         " undofile: put the undo information into file..
@@ -426,6 +476,9 @@
     " }}}
 
     " Screen settings {{{
+
+        " no beep sound
+        set noerrorbells visualbell t_vb=
 
         " tile for VIM window's top bar
         set title
@@ -444,9 +497,16 @@
         " fold mode settings
         set foldmethod=syntax
         set foldlevel=10
+
         " to see special char
-        set listchars=tab:->,trail:-
-        set list  
+        " 'nbsp' stands for non-breakable space (character 0xA0)
+        " https://www.reddit.com/r/vim/comments/4hoa6e/what_do_you_use_for_your_listchars/
+        "set list listchars=tab:▸\ ,trail:·,precedes:←,extends:→
+        "set list listchars=eol:↲,nbsp:␣,trail:•,extends:⟩,precedes:⟨
+        "set list listchars=tab:→\ ,nbsp:␣,trail:·,extends:⟩,precedes:⟨
+        set list listchars=tab:▸→,nbsp:␣,trail:•,extends:⟩,precedes:⟨
+        set showbreak=↪\ 
+
         " allow backspacing over everything in insert mode
         set backspace=2
         " set tab size as # of spaces
@@ -457,6 +517,16 @@
         set expandtab
         " set the # of spaces to be deleted, which is made by tab key
         set softtabstop=2
+
+        "autocmd BufRead,BufNewFile,BufEnter /remote/vgrndn2/syu/pc_sandbox/* setlocal shiftwidth=4 tabstop=4 softtabstop=4
+        autocmd BufRead,BufNewFile,BufEnter /remote/vgrndn2/syu/pc_sandbox/* setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
+
+        " use tab char in Makefile
+        " use command :verbose set expandtab? to confirm
+        autocmd BufNewFile,BufRead *.make set noexpandtab
+        autocmd BufNewFile,BufRead *.mk   set noexpandtab
+
+        "expandtab!
 
         " prefer to show new split window at bottom side
         set splitbelow
@@ -473,39 +543,42 @@
         " status bar location
         set laststatus=2
         " cterm-colors
-        " NR-16   NR-8    COLOR NAME
-        "    0      0     Black
-        "    1      4     DarkBlue
-        "    2      2     DarkGreen
-        "    3      6     DarkCyan
-        "    4      1     DarkRed
-        "    5      5     DarkMagenta
-        "    6      3     Brown, DarkYellow
-        "    7      7     LightGray, LightGrey, Gray, Grey
-        "    8      0*    DarkGray, DarkGrey
-        "    9      4*    Blue, LightBlue
-        "    10     2*    Green, LightGreen
-        "    11     6*    Cyan, LightCyan
-        "    12     1*    Red, LightRed
-        "    13     5*    Magenta, LightMagenta
-        "    14     3*    Yellow, LightYellow
-        "    15     7*    White
+        " NR-16   NR-8(Now) COLOR NAME
+        "    0      0       Black
+        "    1      4       DarkBlue
+        "    2      2       DarkGreen
+        "    3      6       DarkCyan
+        "    4      1       DarkRed
+        "    5      5       DarkMagenta
+        "    6      3       Brown, DarkYellow
+        "    7      7       LightGray, LightGrey, Gray, Grey
+        "    8      0*      DarkGray, DarkGrey
+        "    9      4*      Blue, LightBlue
+        "    10     2*      Green, LightGreen
+        "    11     6*      Cyan, LightCyan
+        "    12     1*      Red, LightRed
+        "    13     5*      Magenta, LightMagenta
+        "    14     3*      Yellow, LightYellow
+        "    15     7*      White
         " style: underline / reverse / bold
         set statusline=%4*\ \ %8*[\ %1*%{CostomizeFullFileName(0)}%3*/%2*%{CostomizeFullFileName(1)}
         set statusline+=%8*\ \|\ %6*%{&encoding},%{&spelllang},%{&fileformat}%{\"\".((exists(\"+bomb\")\ &&\ &bomb)?\",BOM\":\"\").\"\"}
         set statusline+=%8*\ \|\ %7*%{FileTime()}
+        set statusline+=%8*\ \|\ %9*%{FilePerm()}
         set statusline+=%8*\ ]\ %4*%=%0*%r
         set statusline+=%8*\ [\ %5*(%l,%5*%c)%m%8*\ \|\ %9*%p%9*%%%8*\ ]
 
-        highlight User1  term=bold      cterm=bold,underline    ctermfg=1
-        highlight User2  term=underline cterm=bold,underline    ctermfg=3
-        highlight User3  term=bold      cterm=bold              ctermfg=0
-        highlight User4  term=bold      cterm=reverse           ctermfg=0
-        highlight User5  term=bold      cterm=bold,underline    ctermfg=2
-        highlight User6  term=bold      cterm=bold,underline    ctermfg=5
-        highlight User7  term=bold      cterm=bold,underline    ctermfg=4
-        highlight User8  term=underline cterm=bold              ctermfg=7
-        highlight User9  term=underline cterm=bold,underline    ctermfg=6
+        highlight User1  term=bold      cterm=bold,underline    ctermfg=1 gui=bold,underline  guibg=Black guifg=Red
+        highlight User2  term=underline cterm=bold,underline    ctermfg=3 gui=bold,underline  guibg=Black guifg=Yellow
+        highlight User3  term=bold      cterm=bold              ctermfg=0 gui=bold            guibg=Black guifg=Black
+        highlight User4  term=bold      cterm=reverse           ctermfg=0 gui=reverse         guibg=Black guifg=Black
+        highlight User5  term=bold      cterm=bold,underline    ctermfg=2 gui=bold,underline  guibg=Black guifg=Green
+        highlight User6  term=bold      cterm=bold,underline    ctermfg=5 gui=bold,underline  guibg=Black guifg=Magenta
+        highlight User7  term=bold      cterm=bold,underline    ctermfg=4 gui=bold,underline  guibg=Black guifg=Blue
+        highlight User8  term=underline cterm=bold              ctermfg=7 gui=bold            guibg=Black guifg=LightGray
+        highlight User9  term=underline cterm=bold,underline    ctermfg=6 gui=bold,underline  guibg=Black guifg=Cyan
+        highlight NonText                                       ctermfg=0                                 guifg=Black
+        highlight SpecialKey                                    ctermfg=0                                 guifg=Black
 
         " show line number
         " not show: :nonumber
@@ -524,16 +597,22 @@
         " highlight matched brackets
         set showmatch
 
+        " turning off automatic formatting
+        " vim.wikia.com/wiki/Word_wrap_without_line_breaks
+        " https://vi.stackexchange.com/questions/2784/how-to-stop-gvim-wrapping-text-at-column-80
+        set formatoptions=
+
         " color settings
         " ref: http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
-        highlight LineNr                           cterm=NONE            ctermfg=Grey        ctermbg=NONE
-        highlight CursorLineNr                     cterm=bold,reverse    ctermfg=DarkGreen   ctermbg=NONE
-        highlight CursorLine                       cterm=bold                                ctermbg=DarkBlue
-        highlight ColorColumn                                            ctermbg=Blue
-        highlight TabLineSel   term=bold,underline cterm=bold,underline  ctermfg=Gray        ctermbg=DarkRed
-        highlight TabLine      term=bold           cterm=bold
-        highlight Comment                          cterm=bold
-        highlight Search       term=bold           cterm=bold,reverse    ctermfg=Yellow      ctermbg=None
+        highlight LineNr                           cterm=NONE           ctermfg=DarkGrey  ctermbg=NONE    gui=NONE           guifg=White     guibg=NONE
+        highlight CursorLineNr                     cterm=bold           ctermfg=DarkGreen ctermbg=NONE    gui=bold           guifg=Green     guibg=NONE
+        highlight CursorLine                       cterm=bold           ctermbg=DarkBlue                  gui=bold                           guibg=DarkBlue
+        highlight ColorColumn                                           ctermbg=Blue                                         guibg=Blue
+        highlight TabLineSel   term=bold,underline cterm=bold,underline ctermfg=Gray      ctermbg=DarkRed gui=bold,underline guifg=Gray      guibg=DarkRed
+        highlight TabLine      term=bold           cterm=bold                                             gui=bold
+        highlight Comment                          cterm=bold                                             gui=bold
+        highlight Search       term=bold           cterm=bold,reverse   ctermfg=Yellow    ctermbg=None    gui=bold,reverse   guifg=Yellow
+        highlight TabLineFill                      cterm=None                                             gui=reverse
         highlight clear TabLineFill
 
         " color for margin line
@@ -541,7 +620,7 @@
         "set colorcolumn=80
         "let &colorcolumn="80,".join(range(120,999),",")
 
-        " plugin config
+        " plugin config - indent_guides
         let g:indent_guides_auto_colors = 0
         let g:indent_guides_guide_size  = 1
         "autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
@@ -550,6 +629,12 @@
         "hi IndentGuidesEven guibg=green ctermbg=4
         highlight IndentGuidesOdd  ctermbg=8
         highlight IndentGuidesEven ctermbg=12
+
+        " plugin config - ctrlp
+        let g:ctrlp_max_files = 0
+        let g:ctrlp_max_depth = 40
+        let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20,results:20'
+        let g:ctrlp_clear_cache_on_exit = 0
 
     " }}}
 
@@ -561,14 +646,19 @@
         " :IndentGuidesToggle        // Ext-function: Toggles the indent guides
         " :so color_demo.vim         // Ext-script: Showing avaliable color highlightings
         " gf / ctrl + 6              // go into/back from file, open the file located by current line
+        " original ctrl + o          // CTRL-O to go to an older position in jump list
         " :! COMMAND                 // executing TERMINAL COMMAND, will return to terminal
 
     " }}}
+    if !exists(":DiffOrig")
+        command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
+    endif
+
 
     " --------------------------------------------------
     " [paste mode no-paste mode switcher] {{{
     " --------------------------------------------------
-    " enable in Linux: gnome-terminal / Windows: New Putty / OSX: Terminal、iterm2
+    " enable in Linux: gnome-terminal / Windows: New Putty / OSX: Terminal Iterm2
     " vim command: set paste / set nopaste
     if &term =~ "xterm.*"
         let &t_ti = &t_ti . "\e[?2004h"
@@ -585,7 +675,7 @@
     endif
 
     " --------------------------------------------------
-    " [File name copying] {{{
+    " [copy the current file path] {{{
     " --------------------------------------------------
     " save into 1.unnamed register(@", for yank, use 'p' to paste it on vim) & 2.system-level clipboard(@+, out of vim)
     " http://stackoverflow.com/questions/916875/yank-file-name-path-of-current-buffer-in-vim
@@ -607,6 +697,71 @@
         echohl User8
         echon  ' ' . fullpath[visible_len :]
         echohl None
+    endfunction
+    " }}}
+
+    " --------------------------------------------------
+    " [Copy all opend files' path] {{{
+    " --------------------------------------------------
+    " :CopyAllFullPaths[!] {newname}
+    command! -nargs=* -complete=file -bang CopyAllFullPaths call CopyAllFullPaths(<q-args>)
+    function! CopyAllFullPaths(modes)
+        let l:allpaths = ""
+        let l:alldirs  = ""
+        let l:spt      = "\n"
+        let l:is_fullp  = 0
+        let l:copy_dir  = 0
+        let l:copy_dir_msg  = ""
+        let l:full_path_msg = "relative"
+        let l:one_line_msg  = "!"
+        if a:modes =~ "d"
+            let l:copy_dir_msg  = "and dir "
+            let l:copy_dir      = 1
+        endif
+        if a:modes =~ "v"
+            let l:one_line_msg  = " in one line!"
+            let l:allpaths      = 'vim -p '
+            let l:spt           = " "
+            let l:copy_dir      = 0
+            let l:copy_dir_msg  = ""
+        endif
+        if a:modes =~ "f"
+            let l:is_fullp      = 1
+            let l:full_path_msg = "full"
+        endif
+        for i in range(tabpagenr('$'))
+            let l:id        = '' . (i+1) . ''
+            let l:buflist   = tabpagebuflist(l:id)
+            let l:winnr     = tabpagewinnr(l:id)
+            let l:tag       = '#' . (l:buflist[l:winnr - 1])
+            " ===== PATH to file =====
+            if l:is_fullp > 0
+                let l:tag   = l:tag . ':p'
+            endif
+            let l:cur_path  = expand(l:tag)
+            if i > 0
+                let l:allpaths  .= l:spt
+            endif
+            let l:allpaths  .= l:cur_path
+            " ===== PATH to dir contains file =====
+            if l:copy_dir > 0
+                let l:tag     = l:tag . ':h'
+                let l:cur_dir = expand(l:tag) . '/'
+                let l:alldirs .= l:spt . l:cur_dir
+            endif
+        endfor
+        if l:copy_dir > 0
+            let l:allpaths .= l:spt . l:alldirs
+        endif
+
+        "echo l:allpaths
+        let @* = l:allpaths
+        let @+ = l:allpaths
+        let @" = l:allpaths
+        echohl User8
+        echon  'All opend ' . l:full_path_msg . ' paths ' . l:copy_dir_msg . 'are copied' . l:one_line_msg
+        echohl None
+        return 1
     endfunction
     " }}}
 
@@ -638,10 +793,31 @@
         let curfilename=expand("%:t")
         let curfilepath=expand('%:h')
         let fullfilename=curfilepath . '/' . curfilename
-        let msg="".strftime("%Y-%m-%d %H:%M %Z", getftime(fullfilename))
+        let msg="".strftime("%Y %b %d %H:%M%P %z", getftime(fullfilename))
         return msg
     endfunction
-    " }}}<F5>
+    " }}}
+
+    " --------------------------------------------------
+    " [File Permission] {{{
+    " --------------------------------------------------
+    " show file permisson tag (to file owner) in status line, 755 for a new file
+    " https://unix.stackexchange.com/questions/58326/how-to-display-the-permissions-of-a-new-file-in-the-status-line-of-the-vim-edito
+    function! FilePerm()
+        let a=getfperm(expand('%:p'))
+        if strlen(a)
+            return a
+        endif
+        let b=printf("%o", xor(0777,system("umask")))
+        let c=""
+        for d in [0, 1, 2]
+            let c.=and(b[d], 4) ? "r" : "-"
+            let c.=and(b[d], 2) ? "w" : "-"
+            let c.=and(b[d], 1) ? "x" : "-"
+        endfor
+        return c
+     endfunction
+    " }}}
 
     " --------------------------------------------------
     " [Padding zero for number] {{{
@@ -691,64 +867,65 @@
     " [User difined Tabline, dynamical version] {{{
     " --------------------------------------------------
     function! MyTabLine()
-        "set limit width of one tab page
-        let limit_width = (winwidth(0) - 6 - 3 * tabpagenr('$') - 15 - len(''.tabpagenr().'') - len(''.tabpagenr('$').'')) / tabpagenr('$')
+        " set limit width of one tab page
+        let tab_space = winwidth(0)
+        " define the basic length of text shown in tab line
+        let curTabIdx = tabpagenr()
+        let blockWidth = 6 + 3 * tabpagenr('$') + len(expand("%:t")) + 2 + len(''.tabpagenr().'') + 1 + len(''.tabpagenr('$').'') + 2 + 15
+        let limitTabWidth = (winwidth(0) - blockWidth) / (tabpagenr('$') - 1)
         let s = '%8* Line '
         let cur_no = -1
         for i in range(tabpagenr('$'))
-            " set thetabpagenumber (for mouse clicks)
-            "let s .= '%' . (i + 1) . 'T'
-            " select the highlighting
-            "if i + 1 == tabpagenr()
-            "    let s .= ' %1*'
-            "else
-            "    let s .= ' %8*'
-            "endif
-            "let s .= i+1 . ':'
-            "let s .= '%3*'
             let s .= ' '
             " select the highlighting
-            if i + 1 == tabpagenr()
+            if i + 1 == curTabIdx
                 " '%#TabLineSel#'
                 let cur_no = i + 1
                 let s .= '%2*'
+                let s .= '%{MyTabLabel(' . (i + 1) . ', 100)}'
+                let s .= '%8* ▾'
             else
                 " '%#TabLine#'
                 let s .= '%*'
+                let s .= '%{MyTabLabel(' . (i + 1) . ',' . (limitTabWidth) . ')}'
+                let s .= '%3* ▿'
             endif
-            " the label is made by MyTabLabel()
-            let s .= '%{MyTabLabel(' . (i + 1) . ',' . (limit_width) . ')}'
-            let s .= '%3* |'
-         endfor
+        endfor
         " after the last tab fill with TabLineFill and reset tabpagenr
         let s .= '%#TabLineFill#%T'
         " right-align the label to close the current tab page
-        if tabpagenr('$') == 1
-            let s .= '%=%#TabLine#%999X'. '%8*[ ' . '%2*' . cur_no . '%8*/' . tabpagenr('$') . '  tab ]'
-        else
-            let s .= '%=%#TabLine#%999X'. '%8*[ ' . '%2*' . cur_no . '%8*/' . tabpagenr('$') . ' tabs ]'
-        endif
+        let s .= '%=%#TabLine#%999X'. '%8*[ ' . '%2*' . cur_no . '%8*/' . tabpagenr('$') . ' ]'
         return s
     endfunction
-    function! MyTabLabel(n,limit_len)
+    " the label is made by MyTabLabel()
+    function! MyTabLabel(n,limitLen)
         let buflist   = tabpagebuflist(a:n)
         let winnr     = tabpagewinnr(a:n)
-        let alist     = split(bufname(buflist[winnr - 1]),'/')
-        let NoName = 1
-        for ii in alist
-            let shortname = ii
-            let NoName = 0
-        endfor
-        if NoName == 1
-            let shortname = '[New]'
+        let fileFlag  = ''
+        if getbufvar(bufname(buflist[winnr - 1]), '&modified')
+            let fileFlag .= '+'
+        endif
+        "if getbufvar(bufname(buflist[winnr - 1]), '&readonly')
+        "    let fileFlag .= 'R'
+        "endif
+        if fileFlag != ''
+            let fileFlag = '[' . fileFlag . ']'
+        endif
+
+        let pathList = split(bufname(buflist[winnr - 1]),'/')
+        let fileName = fileFlag
+        if len(pathList) >= 1
+            let fileName .= pathList[-1]
+        else
+            let fileName .= '[New]'
         endif
         " http://learnvimscriptthehardway.stevelosh.com/chapters/35.html
         " http://learnvimscriptthehardway.stevelosh.com/chapters/24.html
         " http://stackoverflow.com/questions/26315925/get-usable-window-width-in-vim-script
-        return shortname[:a:limit_len]
-        "return shortname
-        "return fnamemodify(shortname, ':t')
-        "return bufname(shortname[winnr - 1])
+        return fileName[:a:limitLen]
+        "return fileName
+        "return fnamemodify(fileName, ':t')
+        "return bufname(fileName[winnr - 1])
     endfunction
     " }}}
 
@@ -767,8 +944,6 @@
             if ccnum >= 0 | exec "setl cc=".(ccnum) | en
         en
     endfunction
-    "map  . <A->>
-    "map  , <A-<>
     map , <A-<>
     map . <A->>
     map <silent> <A-<> :call ReferenceLine('sub')<CR>
@@ -830,3 +1005,4 @@
         return l:status
     endfunction
     " }}}
+
